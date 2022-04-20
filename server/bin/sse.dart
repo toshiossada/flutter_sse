@@ -9,27 +9,43 @@ import 'eventsource.dart';
 
 main() {
   var app = Router();
-  app.get("/events", (r) {
-    final publisher = EventSourcePublisher();
-    generateEvents(publisher);
-    var handler = eventSourceHandler(publisher);
-    handler(r);
-  });
+
+  app.get("/events", _handlerEventsWithoutUser);
+
+  app.get("/events/<user>", _handlerEventsWithtUser);
 
   io.serve(app, "localhost", 8080);
 }
 
-generateEvents(EventSourcePublisher publisher) {
+_handlerEventsWithoutUser(dynamic r) {
+  final publisher = EventSourcePublisher();
+  generateEvents(publisher);
+  var handler = eventSourceHandler(publisher);
+  handler(r);
+}
+
+_handlerEventsWithtUser(dynamic request, String user) {
+  final publisher = EventSourcePublisher();
+  generateEvents(publisher, user: user);
+  var handler = eventSourceHandler(publisher, channel: user);
+  handler(request);
+}
+
+generateEvents(
+  EventSourcePublisher publisher, {
+  String? user,
+}) {
   int id = 0;
-  Timer.periodic(const Duration(seconds: 1), (timer) {
+  Timer.periodic(const Duration(milliseconds: 500), (timer) {
     final data = json.encode({
       'id': id,
       'message': 'event $id',
       'finished': id == 10,
+      'user': user,
     });
-    publisher.add(Event(data: data));
+    publisher.add(Event(data: data), channels: [user ?? '']);
 
-    if (id == 10) {
+    if (id == 100) {
       timer.cancel();
 
       publisher.close();
