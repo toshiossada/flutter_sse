@@ -3,9 +3,8 @@ import 'dart:convert';
 
 import 'package:eventsource/publisher.dart';
 import "package:shelf/shelf_io.dart" as io;
+import 'package:shelf_eventsource/shelf_eventsource.dart';
 import 'package:shelf_router/shelf_router.dart';
-
-import 'eventsource.dart';
 
 main() {
   var app = Router();
@@ -37,15 +36,17 @@ generateEvents(
 }) {
   int id = 0;
   Timer.periodic(const Duration(milliseconds: 500), (timer) {
+    var finished = id >= 20;
+
     final data = json.encode({
       'id': id,
       'message': 'event $id',
-      'finished': id == 10,
+      'finished': finished,
       'user': user,
     });
     publisher.add(Event(data: data), channels: [user ?? '']);
 
-    if (id == 100) {
+    if (finished) {
       timer.cancel();
 
       publisher.close();

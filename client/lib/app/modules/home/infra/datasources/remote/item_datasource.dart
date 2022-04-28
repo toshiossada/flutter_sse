@@ -17,9 +17,6 @@ class ItemDatasource implements IItemDatasource {
       baseUrl: 'localhost:8080',
       path: '/events',
       method: SseMethod.GET,
-      queryParameters: {},
-      headers: {},
-      data: {},
     );
 
     yield* request.stream.map(

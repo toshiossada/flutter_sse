@@ -15,6 +15,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: ValueListenableBuilder<ItemVieModel>(
           valueListenable: controller.store,
           builder: (context, value, _) {

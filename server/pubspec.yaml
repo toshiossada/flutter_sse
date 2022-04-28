@@ -9,6 +9,9 @@ dependencies:
   eventsource: ^0.4.0
   shelf: ^1.3.0
   shelf_router: ^1.1.2
-
+  shelf_eventsource:
+    git:
+      url: https://github.com/toshiossada/dart-shelf_eventsource.git
+      ref: master
 dev_dependencies:
   lints: ^1.0.0
